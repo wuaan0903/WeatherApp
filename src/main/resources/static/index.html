@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <link rel="stylesheet" href="sweetalert2.min.css">
+</head>
+<body>
+<div class="weather-container">
+    <div class="current-weather">
+        <div class="date-location">
+            <h3 id="day"> -- </h3>
+            <p id="date"> ------------ </p>
+            <p id="location"><i class="fas fa-map-marker-alt"></i> -- </p>
+        </div>
+        <div class="temp-icon">
+            <i class="fas fa-sun"></i>
+            <h1> -- </h1>
+            <p> - </p>
+        </div>
+    </div>
+    <div class="weather-details">
+        <div class="search-container">
+            <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Tìm kiếm địa điểm..."
+                    class="search-input"
+            />
+            <button class="search-btn" onclick="getWeather()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="stats">
+            <p>
+                <i class="fas fa-tint"></i> Độ ẩm
+                <span> -- </span>
+            </p>
+            <p> <i class="fas fa-wind"></i> Sức gió <span> -- </span></p>
+            <p> <i class="fas fa-tachometer-alt"></i> Áp suất <span> -- </span></p>
+            <p> <i class="fas fa-eye"></i> Tầm nhìn xa <span> -- </span></p>
+        </div>
+        <div class="forecast">
+            <div class="day">
+                <i class="fas fa-cloud"></i>
+                <p>Sat</p>
+                <p>--</p>
+            </div>
+            <div class="day">
+                <i class="fas fa-sun"></i>
+                <p>Sun</p>
+                <p>--</p>
+            </div>
+            <div class="day">
+                <i class="fas fa-snowflake"></i>
+                <p>Mon</p>
+                <p>--</p>
+            </div>
+            <div class="day">
+                <i class="fas fa-cloud-showers-heavy"></i>
+                <p>Tue</p>
+                <p>--</p>
+            </div>
+        </div>
+    </div>
+    <div class="current-weather">
+        <h4 style="
+    padding-bottom: 20px;
+    text-transform: uppercase;
+">Dự báo trong tuần</h4>
+        <div class="forecast1">
+            <div class="day">
+                <p>--</p>
+                <i class="fas fa-cloud"></i>
+
+                <p> -- </p>
+                <p> --</p>
+            </div>
+            <div class="day">
+                <p>--</p>
+                <i class="fas fa-cloud"></i>
+
+                <p> -- </p>
+                <p> --- </p>
+            </div>
+            <div class="day">
+                <p> -- </p>
+                <i class="fas fa-cloud"></i>
+
+                <p> -- </p>
+                <p> -- </p>
+            </div>
+            <div class="day">
+                <p>--</p>
+                <i class="fas fa-cloud"></i>
+
+                <p> -- </p>
+                <p> -- </p>
+            </div>
+            <div class="day">
+                <p>  -- </p>
+                <i class="fas fa-cloud"></i>
+
+                <p> -- </p>
+                <p> --C </p>
+            </div>
+            <div class="day">
+                <p>--</p>
+                <i class="fas fa-cloud"></i>
+
+                <p> -- </p>
+                <p> -- </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--<script src="script.js"></script>-->
+<script src="sweetalert2.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Mặc định lấy thời tiết cho "Hanoi" khi load trang
+        getWeather("Hanoi");
+    });
+
+    function getWeather() {
+        const city = document.getElementById("search-input").value || "Hanoi";
+        axios.get(`/api/weather/forecast/${city}`)
+            .then(response => {
+
+                const weather = response.data;
+                console.log(weather);
+
+                updateForecast(weather);
+
+            })
+            .catch(error => {
+                alert("Không tìm thấy thành phố mà bạn yêu cầu !");
+
+            });
+        axios.get(`/api/weather/current/${city}`)
+            .then(response => {
+
+                const weather = response.data;
+                console.log(weather);
+
+                updateUI(weather);
+
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Có lỗi xảy ra...",
+                    text: "Không tìm thấy thành phố mà bạn yêu cầu !",
+
+                });
+            });
+
+        axios.get(`/api/weather/forecastHour/${city}`)
+            .then(response => {
+
+                const weather = response.data;
+                console.log(weather);
+
+                updateHour(weather);
+
+            });
+    }
+
+    function updateUI(weather) {
+        const locationElement = document.getElementById("location");
+        const tempIconElement = document.querySelector(".temp-icon");
+        const statsElement = document.querySelector(".stats");
+
+        // Cập nhật vị trí và thông tin thời tiết hiện tại
+        locationElement.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${weather.cityName.toUpperCase()}`;
+        document.querySelector(".temp-icon h1").textContent = `${Math.round(weather.temperature)}°C`;
+        document.querySelector(".temp-icon p").textContent = translateWeatherDescription(weather.description);
+        document.querySelector(".temp-icon i").className = getWeatherIcon(weather.icon);
+
+        // Hiển thị độ ẩm và sức gió
+        document.querySelector(".stats p:nth-child(1) span").textContent = `${weather.humidity} %`;
+        document.querySelector(".stats p:nth-child(2) span").textContent = `${Math.round(weather.windSpeed)} km/h`;
+        document.querySelector(".stats p:nth-child(3) span").textContent = `${Math.round(weather.pressure)} hPa`;
+        document.querySelector(".stats p:nth-child(4) span").textContent = `${weather.visibility / 1000} km`;
+
+        // Thêm animation
+        locationElement.classList.add("animated", "fade-in");
+        tempIconElement.classList.add("animated", "scale-in");
+        statsElement.classList.add("animated", "fade-in");
+
+        // Loại bỏ lớp animation sau khi hoàn thành
+        setTimeout(() => {
+            locationElement.classList.remove("animated", "fade-in");
+            tempIconElement.classList.remove("animated", "scale-in");
+            statsElement.classList.remove("animated", "fade-in");
+        }, 800);
+    }
+
+    function updateHour(data){
+        const dayElements = document.querySelectorAll(".forecast .day");
+        dayElements.forEach((element, index) => {
+            if (data[index]) {
+                const hour = data[index].date; // Lấy ngày
+                const temp = data[index].temperature;
+
+                const icon = data[index].icon;
+
+                // Cập nhật nội dung
+                element.querySelector("p:nth-child(2)").textContent = hour;
+                element.querySelector("p:nth-child(3)").textContent = `${Math.round(temp)}°C`;
+                element.querySelector("i").className = getWeatherIcon(icon);
+
+                // Thêm animation
+                element.classList.add("animated", "fade-in");
+
+                // Loại bỏ lớp animation sau khi hoàn thành
+                setTimeout(() => {
+                    element.classList.remove("animated", "fade-in");
+                }, 800);
+            }
+        });
+    }
+
+    function updateForecast(data) {
+        const dayElements = document.querySelectorAll(".forecast1 .day");
+
+        document.getElementById("day").textContent = getDayOfWeek(data[0].date);
+        const date = new Date(data[0].date);
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // getMonth trả giá trị từ 0 đến 11, cần +1
+        const year = date.getFullYear();
+
+        const formattedDate = `${day} tháng ${month} năm ${year}`;
+        document.getElementById("date").textContent = formattedDate;
+
+        dayElements.forEach((element, index) => {
+            if (data[index]) {
+                const day = getDayOfWeek(data[index].date); // Lấy ngày
+                const tempMin = data[index].tempMin;
+                const tempMax = data[index].tempMax; // Lấy nhiệt độ
+
+                const icon = data[index].icon;
+
+                // Cập nhật nội dung
+                element.querySelector("p:nth-child(1)").textContent = day;
+                element.querySelector("p:nth-child(3)").textContent = `${Math.round(tempMin)}°C`;
+                element.querySelector("p:nth-child(4)").textContent = `${Math.round(tempMax)}°C`;
+                element.querySelector("i").className = getWeatherIcon(icon);
+
+                // Thêm animation
+                element.classList.add("animated", "fade-in");
+
+                // Loại bỏ lớp animation sau khi hoàn thành
+                setTimeout(() => {
+                    element.classList.remove("animated", "fade-in");
+                }, 800);
+            }
+        });
+    }
+
+    function translateWeatherDescription(description) {
+        const translations = {
+            "clear sky": "Trời quang đãng",
+            "few clouds": "Ít mây",
+            "scattered clouds": "Mây rải rác",
+            "broken clouds": "Mây đứt đoạn",
+            "overcast clouds": "Mây u ám",
+            "light rain": "Mưa nhẹ",
+            "moderate rain": "Mưa vừa",
+            "heavy intensity rain": "Mưa lớn",
+            "very heavy rain": "Mưa rất lớn",
+            "extreme rain": "Mưa cực lớn",
+            "freezing rain": "Mưa tuyết",
+            "light intensity drizzle": "Mưa phùn nhẹ",
+            "drizzle": "Mưa phùn",
+            "heavy intensity drizzle": "Mưa phùn nặng hạt",
+            "thunderstorm": "Dông",
+            "thunderstorm with light rain": "Dông kèm mưa nhẹ",
+            "thunderstorm with rain": "Dông kèm mưa",
+            "thunderstorm with heavy rain": "Dông kèm mưa lớn",
+            "snow": "Tuyết",
+            "light snow": "Tuyết nhẹ",
+            "heavy snow": "Tuyết rơi nhiều",
+            "mist": "Sương mù",
+            "smoke": "Khói",
+            "haze": "Sương khói",
+            "dust": "Bụi",
+            "fog": "Sương mù dày đặc",
+            "sand": "Cát",
+            "ash": "Tro",
+            "squall": "Gió giật",
+            "tornado": "Lốc xoáy"
+        };
+
+        return translations[description] || "Không xác định"; // Trả về "Không xác định" nếu không tìm thấy
+    }
+
+    function getWeatherIcon(icon) {
+        const weatherIcons = {
+            "01d": "fas fa-sun",
+            "01n": "fas fa-moon",
+            "02d": "fas fa-cloud-sun",
+            "02n": "fas fa-cloud-moon",
+            "03d": "fas fa-cloud",
+            "03n": "fas fa-cloud",
+            "04d": "fas fa-cloud",
+            "04n": "fas fa-cloud",
+            "09d": "fas fa-cloud-showers-heavy",
+            "09n": "fas fa-cloud-showers-heavy",
+            "10d": "fas fa-cloud-sun-rain",
+            "10n": "fas fa-cloud-moon-rain",
+            "11d": "fas fa-bolt",
+            "11n": "fas fa-bolt",
+            "13d": "fas fa-snowflake",
+            "13n": "fas fa-snowflake",
+            "50d": "fas fa-smog",
+            "50n": "fas fa-smog",
+        };
+        return weatherIcons[icon] || "fas fa-question-circle";
+    }
+
+    // Hàm chuyển đổi ngày thành thứ
+    function getDayOfWeek(dateStr) {
+        const daysOfWeek = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+        const date = new Date(dateStr); // Chuyển chuỗi ngày thành đối tượng Date
+        const dayIndex = date.getDay(); // Lấy chỉ số thứ trong tuần (0: Chủ nhật, 6: Thứ Bảy)
+        return daysOfWeek[dayIndex]; // Trả về tên thứ tương ứng
+    }
+
+
+</script>
+</body>
+</html>

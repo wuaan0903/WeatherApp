@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", serif;
+}
+
+body {
+    background-color: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #fff;
+}
+
+.weather-container {
+    display: flex;
+    background-color: #232946;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.current-weather {
+    background: url("https://source.unsplash.com/400x500/?nature") no-repeat
+    center center/cover;
+    padding: 20px;
+    color: #fff;
+    width: 250px;
+    text-align: center;
+    position: relative;
+}
+
+.current-weather .date-location h3 {
+    font-size: 1.6rem;
+}
+
+.current-weather .date-location p {
+    font-size: 0.8rem;
+    opacity: 1;
+    padding-bottom: 10px;
+}
+#location{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+#location i{
+    padding-right: 5px;
+}
+
+.temp-icon {
+    margin-top: 20px;
+}
+
+.temp-icon i {
+    font-size: 4rem;
+}
+
+.temp-icon h1 {
+    font-size: 3.5rem;
+    margin: 10px 0;
+}
+
+.weather-details {
+    background-color: #1f1f3d;
+    padding: 20px;
+    width: 300px;
+}
+
+.stats p {
+    font-size: 0.8rem;
+    letter-spacing: -1px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+}
+.stats p span{
+    width: 50px;
+    text-align: right;
+}
+
+.forecast {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.forecast .day {
+    text-align: center;
+}
+.forecast .day p{
+    font-size: 0.8rem;
+}
+
+.day p:first-of-type {
+    font-size: 0.7rem;
+    padding-top: 5px;
+}
+
+.day p:last-of-type {
+    font-size: 1rem;
+    font-weight: 700;
+
+}
+
+.forecast .day i {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.search-btn {
+    background-color: #232946;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+}
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    padding: 8px;
+    margin-right: 10px;
+    width: 200px;
+    font-size: 12px;
+    border-radius: 25px; /* Rounded corners for the input */
+    border: 1px solid #ccc; /* Optional border styling */
+}
+
+.search-btn {
+    padding: 8px 12px;
+    background-color: #232946;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px; /* Rounded corners for the button */
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+/* Animation Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animation Scale In */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Apply animation styles */
+.animated {
+    animation-duration: 0.8s;
+    animation-fill-mode: both;
+}
+
+.fade-in {
+    animation-name: fadeIn;
+}
+
+.scale-in {
+    animation-name: scaleIn;
+}
+
+.forecast1 .day{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+}
+.forecast1 .day p:first-of-type{
+    align-content: center;
+    font-size: 0.7rem;
+    font-weight: 500;
+    width: 60px;
+    text-align: left;
+}
+.forecast1 .day p{
+    font-size: 0.7rem;
+    align-content: center;
+}
+.forecast1 .day i{
+    font-size: 1.5rem;
+    align-content: center;
+}
