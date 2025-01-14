@@ -55,11 +55,11 @@ body {
 }
 
 .temp-icon i {
-    font-size: 4rem;
+    font-size: 3.5rem;
 }
 
 .temp-icon h1 {
-    font-size: 3.5rem;
+    font-size: 3rem;
     margin: 10px 0;
 }
 
@@ -67,6 +67,31 @@ body {
     background-color: #1f1f3d;
     padding: 20px;
     width: 300px;
+}
+.stats{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+.stats .stats-item{
+    width: 48%;
+    padding: 5px 10px;
+    background: #232946;
+    border-radius: 10px;
+}
+.stats-item h3{
+    padding-top: 5px;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 16px;
+}
+.stats-item h5{
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 10px;
+    align-content: center;
+    padding-left: 5px;
 }
 
 .stats p {
@@ -159,6 +184,17 @@ body {
     }
 }
 
+@keyframes fadeleft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* Animation Scale In */
 @keyframes scaleIn {
     from {
@@ -180,7 +216,9 @@ body {
 .fade-in {
     animation-name: fadeIn;
 }
-
+.fade-left{
+    animation-name: fadeleft;
+}
 .scale-in {
     animation-name: scaleIn;
 }
@@ -188,7 +226,7 @@ body {
 .forecast1 .day{
     display: flex;
     justify-content: space-between;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 .forecast1 .day p:first-of-type{
     align-content: center;
