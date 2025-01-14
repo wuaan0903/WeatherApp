@@ -52,6 +52,7 @@ public class WeatherService {
         JsonNode response = restTemplate.getForObject(url, JsonNode.class);
 
         JsonNode list = response.get("list");
+
         Map<String, List<JsonNode>> groupedByDay = new LinkedHashMap<>();
 
         // Nhóm các bản ghi dự báo theo ngày
@@ -91,6 +92,7 @@ public class WeatherService {
             weather.setDate(date); // Đặt ngày
             weather.setTempMin(minTemp); // Đặt nhiệt độ thấp nhất
             weather.setTempMax(maxTemp); // Đặt nhiệt độ cao nhất
+            weather.setTimezone(response.get("city").get("timezone").asInt());
             dailyForecast.add(weather);
         }
 
@@ -138,6 +140,7 @@ public class WeatherService {
         weather.setPressure(node.get("main").get("pressure").asInt());
         weather.setWindSpeed(node.get("wind").get("speed").asDouble());
         weather.setWindDeg(node.get("wind").get("deg").asInt());
+
         if (node.get("wind").has("gust")) {
             weather.setWindGust(node.get("wind").get("gust").asDouble());
         }

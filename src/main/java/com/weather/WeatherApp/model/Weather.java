@@ -20,6 +20,7 @@ public class Weather {
     private long sunrise; // Giờ mặt trời mọc (UNIX timestamp)
     private long sunset; // Giờ mặt trời lặn (UNIX timestamp)
     private String date; // Thêm thuộc tính ngày
+    private int timezone;
     private List<DailyForecast> forecast; // Dự báo thời tiết nhiều ngày
 
     // Getter và Setter
@@ -162,4 +163,12 @@ public class Weather {
     public void setForecast(List<DailyForecast> forecast) {
         this.forecast = forecast;
     }
+
+    public int getTimezone() {
+        return timezone;
+    }
+    public void setTimezone(int timezone) {
+        this.timezone = timezone;
+    }
+
 }

@@ -10,6 +10,8 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
 
     <link rel="stylesheet" href="sweetalert2.min.css">
 </head>
@@ -17,6 +19,10 @@
 <div class="weather-container">
     <div class="current-weather">
         <div class="date-location">
+            <h3 id="current-time" style="
+    font-weight: 400;
+    font-size: 30px;
+"> -- </h3>
             <h3 id="day"> -- </h3>
             <p id="date"> ------------ </p>
             <p id="location"><i class="fas fa-map-marker-alt"></i> -- </p>
@@ -164,6 +170,7 @@
         getWeather("Hanoi");
     });
 
+
     function getWeather() {
         const city = document.getElementById("search-input").value || "Hanoi";
         axios.get(`/api/weather/forecast/${city}`)
@@ -263,9 +270,12 @@
         });
     }
 
+    let stompClient = null; // Biến toàn cục để quản lý kết nối WebSocket
+    let intervalId = null;  // Biến toàn cục để quản lý setInterval
+
     function updateForecast(data) {
         const dayElements = document.querySelectorAll(".forecast1 .day");
-
+        const timezone = data[0].timezone;
         document.getElementById("day").textContent = getDayOfWeek(data[0].date);
         const date = new Date(data[0].date);
         const day = date.getDate();
@@ -298,7 +308,45 @@
                 }, 800);
             }
         });
+
+        // Đảm bảo thời gian cập nhật theo địa điểm mới
+        document.getElementById("current-time").innerText = "";
+
+        // Đóng kết nối WebSocket cũ nếu tồn tại
+        if (stompClient !== null) {
+            stompClient.disconnect();
+            stompClient = null;
+        }
+
+        // Xóa bộ đếm thời gian cũ nếu tồn tại
+        if (intervalId !== null) {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+
+        // Tạo kết nối WebSocket mới
+        const socket = new SockJS('/time-websocket');
+        stompClient = Stomp.over(socket);
+
+        // Kết nối WebSocket
+        stompClient.connect({}, function () {
+            // Gửi yêu cầu lấy thời gian kèm theo timezone dưới dạng chuỗi
+            stompClient.send("/app/request-time", {}, timezone.toString());
+
+            // Lắng nghe thời gian từ server
+            stompClient.subscribe("/topic/time", function (message) {
+                document.getElementById("current-time").innerText = message.body;
+            });
+
+            // Gửi yêu cầu cập nhật thời gian mỗi giây
+            intervalId = setInterval(function () {
+                stompClient.send("/app/request-time", {}, timezone.toString());
+            }, 1000);
+        });
     }
+
+
+
 
     function translateWeatherDescription(description) {
         const translations = {
@@ -368,6 +416,9 @@
         const dayIndex = date.getDay(); // Lấy chỉ số thứ trong tuần (0: Chủ nhật, 6: Thứ Bảy)
         return daysOfWeek[dayIndex]; // Trả về tên thứ tương ứng
     }
+
+
+
 
 
 </script>

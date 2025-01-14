@@ -51,7 +51,7 @@ body {
 }
 
 .temp-icon {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .temp-icon i {
@@ -109,11 +109,14 @@ body {
 .forecast {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .forecast .day {
     text-align: center;
+    padding: 8px 9px;
+    background: #232946;
+    border-radius: 10px;
 }
 .forecast .day p{
     font-size: 0.8rem;
@@ -148,7 +151,7 @@ body {
 .search-container {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .search-input {
